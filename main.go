@@ -25,6 +25,7 @@ type GodotSpotify struct {
 	ArtistsName gd.String `gd:"artist_names"`
 	CoverURL    gd.String `gd:"cover_url"`
 	ProgressMS  gd.Int    `gd:"progress_ms"`
+	LengthMS    gd.Int    `gd:"length_ms"`
 
 	running    bool
 	updateChan <-chan lib.PlayStateUpdate
@@ -76,20 +77,28 @@ func (h *GodotSpotify) Process(godoCtx gd.Context, delta gd.Float) {
 		updateMsg := <-h.updateChan
 
 		h.IsPlaying = gd.Bool(updateMsg.IsPlaying)
-
-		h.AlbumName.Free()
-		h.AlbumName = h.Pin().String(updateMsg.AlbumName)
-
-		h.TrackName.Free()
-		h.TrackName = h.Pin().String(updateMsg.TrackName)
-
-		h.ArtistsName.Free()
-		h.ArtistsName = h.Pin().String(updateMsg.ArtistsName)
-
-		h.CoverURL.Free()
-		h.CoverURL = h.Pin().String(updateMsg.CoverURL)
-
 		h.ProgressMS = gd.Int(updateMsg.ProgressMS)
+		h.LengthMS = gd.Int(updateMsg.TrackLengthMS)
+
+		if h.AlbumName.String() != updateMsg.AlbumName {
+			h.AlbumName.Free()
+			h.AlbumName = h.Pin().String(updateMsg.AlbumName)
+		}
+
+		if h.TrackName.String() != updateMsg.TrackName {
+			h.TrackName.Free()
+			h.TrackName = h.Pin().String(updateMsg.TrackName)
+		}
+
+		if h.ArtistsName.String() != updateMsg.ArtistsName {
+			h.ArtistsName.Free()
+			h.ArtistsName = h.Pin().String(updateMsg.ArtistsName)
+		}
+
+		if h.CoverURL.String() != updateMsg.CoverURL {
+			h.CoverURL.Free()
+			h.CoverURL = h.Pin().String(updateMsg.CoverURL)
+		}
 	}
 }
 

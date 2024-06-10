@@ -21,12 +21,13 @@ type (
 		lastProgressMS int
 	}
 	PlayStateUpdate struct {
-		IsPlaying   bool
-		AlbumName   string
-		TrackName   string
-		ArtistsName string
-		CoverURL    string
-		ProgressMS  int
+		IsPlaying     bool
+		AlbumName     string
+		TrackName     string
+		ArtistsName   string
+		CoverURL      string
+		ProgressMS    int
+		TrackLengthMS int
 	}
 )
 
@@ -80,12 +81,13 @@ func (p *poller) tick() {
 	if p.hasChanged(playerState) {
 		select {
 		case p.updateSendChan <- PlayStateUpdate{
-			IsPlaying:   playerState.Playing,
-			ProgressMS:  int(playerState.Progress),
-			AlbumName:   getAlbumName(playerState),
-			ArtistsName: getArtistsName(playerState),
-			TrackName:   getTrackName(playerState),
-			CoverURL:    GetCoverImageURL(playerState),
+			IsPlaying:     playerState.Playing,
+			ProgressMS:    int(playerState.Progress),
+			TrackLengthMS: getItemDuration(playerState),
+			AlbumName:     getAlbumName(playerState),
+			ArtistsName:   getArtistsName(playerState),
+			TrackName:     getTrackName(playerState),
+			CoverURL:      getCoverImageURL(playerState),
 		}:
 		case <-time.After(p.pollInterval / 2):
 			fmt.Println("sending poll data timed out")
@@ -141,7 +143,7 @@ func getTrackName(playerState *spotify.PlayerState) string {
 	return playerState.Item.Name
 }
 
-func GetCoverImageURL(playerState *spotify.PlayerState) string {
+func getCoverImageURL(playerState *spotify.PlayerState) string {
 	if playerState.Item == nil {
 		return ""
 	}
@@ -151,4 +153,12 @@ func GetCoverImageURL(playerState *spotify.PlayerState) string {
 	}
 
 	return ""
+}
+
+func getItemDuration(playerState *spotify.PlayerState) int {
+	if playerState.Item == nil {
+		return 0
+	}
+
+	return int(playerState.Item.Duration)
 }

@@ -38,6 +38,9 @@ custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 
+[node name="HSeparator" type="HSeparator" parent="CanvasLayer/CenterContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+
 [node name="ArtistContainer" type="HBoxContainer" parent="CanvasLayer/CenterContainer/PanelContainer/VBoxContainer"]
 layout_mode = 2
 
@@ -46,6 +49,9 @@ layout_mode = 2
 text = "Arist"
 
 [node name="AristName" type="Label" parent="CanvasLayer/CenterContainer/PanelContainer/VBoxContainer/ArtistContainer"]
+layout_mode = 2
+
+[node name="HSeparator2" type="HSeparator" parent="CanvasLayer/CenterContainer/PanelContainer/VBoxContainer"]
 layout_mode = 2
 
 [node name="SongContainer" type="HBoxContainer" parent="CanvasLayer/CenterContainer/PanelContainer/VBoxContainer"]
@@ -58,6 +64,9 @@ text = "Song"
 [node name="SongName" type="Label" parent="CanvasLayer/CenterContainer/PanelContainer/VBoxContainer/SongContainer"]
 layout_mode = 2
 
+[node name="HSeparator3" type="HSeparator" parent="CanvasLayer/CenterContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+
 [node name="AlbumContainer" type="HBoxContainer" parent="CanvasLayer/CenterContainer/PanelContainer/VBoxContainer"]
 layout_mode = 2
 
@@ -68,6 +77,9 @@ text = "Album"
 [node name="AlbumName" type="Label" parent="CanvasLayer/CenterContainer/PanelContainer/VBoxContainer/AlbumContainer"]
 layout_mode = 2
 
+[node name="HSeparator4" type="HSeparator" parent="CanvasLayer/CenterContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+
 [node name="PlayingContainer" type="HBoxContainer" parent="CanvasLayer/CenterContainer/PanelContainer/VBoxContainer"]
 layout_mode = 2
 
@@ -76,4 +88,30 @@ layout_mode = 2
 text = "Is Playing"
 
 [node name="CheckBox" type="CheckBox" parent="CanvasLayer/CenterContainer/PanelContainer/VBoxContainer/PlayingContainer"]
+layout_mode = 2
+
+[node name="HSeparator5" type="HSeparator" parent="CanvasLayer/CenterContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="ProgressContainer" type="VBoxContainer" parent="CanvasLayer/CenterContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/CenterContainer/PanelContainer/VBoxContainer/ProgressContainer"]
+layout_mode = 2
+text = "Progress"
+
+[node name="ProgressBar" type="ProgressBar" parent="CanvasLayer/CenterContainer/PanelContainer/VBoxContainer/ProgressContainer"]
+layout_mode = 2
+
+[node name="HSeparator6" type="HSeparator" parent="CanvasLayer/CenterContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="CoverContainer" type="VBoxContainer" parent="CanvasLayer/CenterContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/CenterContainer/PanelContainer/VBoxContainer/CoverContainer"]
+layout_mode = 2
+text = "Cover"
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer/CenterContainer/PanelContainer/VBoxContainer/CoverContainer"]
 layout_mode = 2

@@ -1,6 +1,6 @@
 # Spotify Godot
 
-![image](https://github.com/devnull-twitch/godot-spotify/assets/97809736/397666a2-7f6e-4ca7-96cc-07e3084d5c0f)
+![image](https://github.com/devnull-twitch/godot-spotify/assets/97809736/5685f133-4634-403a-aa03-b4b281dca119)
 
 This is just an experimental project to use grow.graphics/gd 
 
