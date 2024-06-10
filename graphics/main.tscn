@@ -1,0 +1,79 @@
+[gd_scene load_steps=2 format=3 uid="uid://bmhmiv43fqo4c"]
+
+[ext_resource type="Script" path="res://scripts/UI.gd" id="1_jcu6b"]
+
+[node name="Test" type="Node2D"]
+
+[node name="GodotSpotify" type="GodotSpotify" parent="."]
+spotify_client_id = "1928abdccfed42ec91932eda9263030f"
+spotify_client_secret = "e651999464e14b0c87e82ff8e9ebec69"
+PollInterval = 5
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+script = ExtResource("1_jcu6b")
+
+[node name="CenterContainer" type="CenterContainer" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/CenterContainer"]
+custom_minimum_size = Vector2(350, 0)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/CenterContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="AuthURLContainer" type="HBoxContainer" parent="CanvasLayer/CenterContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/CenterContainer/PanelContainer/VBoxContainer/AuthURLContainer"]
+layout_mode = 2
+text = "Auth URL"
+
+[node name="TextEdit" type="TextEdit" parent="CanvasLayer/CenterContainer/PanelContainer/VBoxContainer/AuthURLContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ArtistContainer" type="HBoxContainer" parent="CanvasLayer/CenterContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/CenterContainer/PanelContainer/VBoxContainer/ArtistContainer"]
+layout_mode = 2
+text = "Arist"
+
+[node name="AristName" type="Label" parent="CanvasLayer/CenterContainer/PanelContainer/VBoxContainer/ArtistContainer"]
+layout_mode = 2
+
+[node name="SongContainer" type="HBoxContainer" parent="CanvasLayer/CenterContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/CenterContainer/PanelContainer/VBoxContainer/SongContainer"]
+layout_mode = 2
+text = "Song"
+
+[node name="SongName" type="Label" parent="CanvasLayer/CenterContainer/PanelContainer/VBoxContainer/SongContainer"]
+layout_mode = 2
+
+[node name="AlbumContainer" type="HBoxContainer" parent="CanvasLayer/CenterContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/CenterContainer/PanelContainer/VBoxContainer/AlbumContainer"]
+layout_mode = 2
+text = "Album"
+
+[node name="AlbumName" type="Label" parent="CanvasLayer/CenterContainer/PanelContainer/VBoxContainer/AlbumContainer"]
+layout_mode = 2
+
+[node name="PlayingContainer" type="HBoxContainer" parent="CanvasLayer/CenterContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/CenterContainer/PanelContainer/VBoxContainer/PlayingContainer"]
+layout_mode = 2
+text = "Is Playing"
+
+[node name="CheckBox" type="CheckBox" parent="CanvasLayer/CenterContainer/PanelContainer/VBoxContainer/PlayingContainer"]
+layout_mode = 2
