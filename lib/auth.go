@@ -14,7 +14,7 @@ var (
 
 func MakeAuth(clientID string, clientSecret string) *spotifyauth.Authenticator {
 	return spotifyauth.New(
-		spotifyauth.WithRedirectURL("http://localhost:8189"),
+		spotifyauth.WithRedirectURL("http://localhost:8188"),
 		spotifyauth.WithScopes(spotifyauth.ScopeUserReadPrivate),
 		spotifyauth.WithClientID(clientID),
 		spotifyauth.WithClientSecret(clientSecret),
@@ -38,7 +38,7 @@ func WebServer(auth *spotifyauth.Authenticator, setClientChan chan<- *spotify.Cl
 		setClientChan <- client
 	})
 
-	server := &http.Server{Addr: ":8189", Handler: mux}
+	server := &http.Server{Addr: ":8188", Handler: mux}
 	go server.ListenAndServe()
 	fmt.Println("webserver should be up")
 

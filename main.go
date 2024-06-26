@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"main/lib"
+	"os/exec"
+	"strings"
 
 	"github.com/zmb3/spotify/v2"
 	"grow.graphics/gd"
@@ -108,6 +110,28 @@ func (h *GodotSpotify) OnSet(godoCtx gd.Context, propName gd.StringName, propVal
 
 func (h *GodotSpotify) ToString(godoCtx gd.Context) gd.String {
 	return godoCtx.String("GodotSpotify")
+}
+
+func (h *GodotSpotify) OpenAuthInBrowser(godoCtx gd.Context) {
+	godotOS := gd.OS(godoCtx)
+
+	var openCmd *exec.Cmd
+	switch strings.ToLower(godotOS.GetName(godoCtx).String()) {
+	case "windows":
+		winQuotedURL := strings.ReplaceAll(h.SpotifyAuthURL.String(), "&", "^&")
+		openCmd = exec.Command("cmd", "/c", "start", winQuotedURL)
+	case "macos":
+		openCmd = exec.Command("open", h.SpotifyAuthURL.String())
+	case "linux":
+		openCmd = exec.Command("xdg-open", h.SpotifyAuthURL.String())
+	default:
+		godoCtx.Printerr(godoCtx.Variant("unable to open browser on current platform"))
+		return
+	}
+
+	if err := openCmd.Run(); err != nil {
+		godoCtx.Printerr(godoCtx.Variant(fmt.Sprintf("error opening browser for auth: %s", err.Error())))
+	}
 }
 
 func main() {
