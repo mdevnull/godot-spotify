@@ -5,8 +5,8 @@
 [node name="Test" type="Node2D"]
 
 [node name="GodotSpotify" type="GodotSpotify" parent="."]
-spotify_client_id = "1928abdccfed42ec91932eda9263030f"
-spotify_client_secret = "e651999464e14b0c87e82ff8e9ebec69"
+spotify_client_id = ""
+spotify_client_secret = ""
 PollInterval = 5
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
