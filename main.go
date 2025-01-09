@@ -8,26 +8,30 @@ import (
 	"strings"
 
 	"github.com/zmb3/spotify/v2"
-	"grow.graphics/gd"
-	"grow.graphics/gd/gdextension"
+	"graphics.gd/classdb"
+	"graphics.gd/classdb/Engine"
+	"graphics.gd/classdb/Node"
+	"graphics.gd/classdb/OS"
+	"graphics.gd/startup"
+	"graphics.gd/variant/Float"
 )
 
 type GodotSpotify struct {
-	gd.Class[GodotSpotify, gd.Node]
+	classdb.Extension[GodotSpotify, Node.Instance]
 
-	SpotifyClientID     gd.String `gd:"spotify_client_id"`
-	SpotifyClientSecret gd.String `gd:"spotify_client_secret"`
-	SpotifyAuthURL      gd.String `gd:"spotify_auth_url"`
-	PollInterval        gd.Int    `default:"5"`
-	Poll                gd.Bool
+	SpotifyClientID     string `gd:"spotify_client_id"`
+	SpotifyClientSecret string `gd:"spotify_client_secret"`
+	SpotifyAuthURL      string `gd:"spotify_auth_url"`
+	PollInterval        int    `default:"5"`
+	Poll                bool
 
-	IsPlaying   gd.Bool   `gd:"is_playing"`
-	AlbumName   gd.String `gd:"album_name"`
-	TrackName   gd.String `gd:"track_name"`
-	ArtistsName gd.String `gd:"artist_names"`
-	CoverURL    gd.String `gd:"cover_url"`
-	ProgressMS  gd.Int    `gd:"progress_ms"`
-	LengthMS    gd.Int    `gd:"length_ms"`
+	IsPlaying   bool   `gd:"is_playing"`
+	AlbumName   string `gd:"album_name"`
+	TrackName   string `gd:"track_name"`
+	ArtistsName string `gd:"artist_names"`
+	CoverURL    string `gd:"cover_url"`
+	ProgressMS  int    `gd:"progress_ms"`
+	LengthMS    int    `gd:"length_ms"`
 
 	running    bool
 	updateChan <-chan lib.PlayStateUpdate
@@ -35,22 +39,22 @@ type GodotSpotify struct {
 }
 
 // Ready implements the Godot Node2D _ready interface (virtual function).
-func (h *GodotSpotify) Ready(godoCtx gd.Context) {
-	clientID := h.SpotifyClientID.String()
-	clientSecret := h.SpotifyClientSecret.String()
+func (h *GodotSpotify) Ready() {
+	clientID := h.SpotifyClientID
+	clientSecret := h.SpotifyClientSecret
 
 	if clientID == "" || clientSecret == "" {
-		godoCtx.Printerr(godoCtx.Variant("Missing spotify client id or secret"))
+		Engine.Log("Missing spotify client id or secret")
 		return
 	}
 
 	auth := lib.MakeAuth(clientID, clientSecret)
-	h.SpotifyAuthURL = h.Pin().String(lib.GetAuthURL(auth))
+	h.SpotifyAuthURL = lib.GetAuthURL(auth)
 
-	h.AlbumName = h.Pin().String("")
-	h.TrackName = h.Pin().String("")
-	h.ArtistsName = h.Pin().String("")
-	h.CoverURL = h.Pin().String("")
+	h.AlbumName = ""
+	h.TrackName = ""
+	h.ArtistsName = ""
+	h.CoverURL = ""
 
 	clientChan := make(chan *spotify.Client)
 	webServer := lib.WebServer(auth, clientChan)
@@ -63,7 +67,7 @@ func (h *GodotSpotify) Ready(godoCtx gd.Context) {
 	}()
 }
 
-func (h *GodotSpotify) Process(godoCtx gd.Context, delta gd.Float) {
+func (h *GodotSpotify) Process(delta Float.X) {
 	if h.running && !bool(h.Poll) && h.endChan != nil {
 		h.endChan <- true
 		h.endChan = nil
@@ -78,66 +82,57 @@ func (h *GodotSpotify) Process(godoCtx gd.Context, delta gd.Float) {
 	if len(h.updateChan) > 0 {
 		updateMsg := <-h.updateChan
 
-		h.IsPlaying = gd.Bool(updateMsg.IsPlaying)
-		h.ProgressMS = gd.Int(updateMsg.ProgressMS)
-		h.LengthMS = gd.Int(updateMsg.TrackLengthMS)
+		h.IsPlaying = updateMsg.IsPlaying
+		h.ProgressMS = updateMsg.ProgressMS
+		h.LengthMS = updateMsg.TrackLengthMS
 
-		if h.AlbumName.String() != updateMsg.AlbumName {
-			h.AlbumName.Free()
-			h.AlbumName = h.Pin().String(updateMsg.AlbumName)
+		if h.AlbumName != updateMsg.AlbumName {
+			h.AlbumName = updateMsg.AlbumName
 		}
 
-		if h.TrackName.String() != updateMsg.TrackName {
-			h.TrackName.Free()
-			h.TrackName = h.Pin().String(updateMsg.TrackName)
+		if h.TrackName != updateMsg.TrackName {
+			h.TrackName = updateMsg.TrackName
 		}
 
-		if h.ArtistsName.String() != updateMsg.ArtistsName {
-			h.ArtistsName.Free()
-			h.ArtistsName = h.Pin().String(updateMsg.ArtistsName)
+		if h.ArtistsName != updateMsg.ArtistsName {
+			h.ArtistsName = updateMsg.ArtistsName
 		}
 
-		if h.CoverURL.String() != updateMsg.CoverURL {
-			h.CoverURL.Free()
-			h.CoverURL = h.Pin().String(updateMsg.CoverURL)
+		if h.CoverURL != updateMsg.CoverURL {
+			h.CoverURL = updateMsg.CoverURL
 		}
 	}
 }
 
-func (h *GodotSpotify) OnSet(godoCtx gd.Context, propName gd.StringName, propValue gd.Variant) {
-	fmt.Printf("Godot Spotify Prop update: %s\n", propName.String())
+func (h *GodotSpotify) OnSet(propName string, propValue any) {
+	fmt.Printf("Godot Spotify Prop update: %s\n", propName)
 }
 
-func (h *GodotSpotify) ToString(godoCtx gd.Context) gd.String {
-	return godoCtx.String("GodotSpotify")
+func (h *GodotSpotify) ToString() string {
+	return "GodotSpotify"
 }
 
-func (h *GodotSpotify) OpenAuthInBrowser(godoCtx gd.Context) {
-	godotOS := gd.OS(godoCtx)
-
+func (h *GodotSpotify) OpenAuthInBrowser() {
 	var openCmd *exec.Cmd
-	switch strings.ToLower(godotOS.GetName(godoCtx).String()) {
+	switch strings.ToLower(OS.GetName()) {
 	case "windows":
-		winQuotedURL := strings.ReplaceAll(h.SpotifyAuthURL.String(), "&", "^&")
+		winQuotedURL := strings.ReplaceAll(h.SpotifyAuthURL, "&", "^&")
 		openCmd = exec.Command("cmd", "/c", "start", winQuotedURL)
 	case "macos":
-		openCmd = exec.Command("open", h.SpotifyAuthURL.String())
+		openCmd = exec.Command("open", h.SpotifyAuthURL)
 	case "linux":
-		openCmd = exec.Command("xdg-open", h.SpotifyAuthURL.String())
+		openCmd = exec.Command("xdg-open", h.SpotifyAuthURL)
 	default:
-		godoCtx.Printerr(godoCtx.Variant("unable to open browser on current platform"))
+		Engine.Log("unable to open browser on current platform")
 		return
 	}
 
 	if err := openCmd.Run(); err != nil {
-		godoCtx.Printerr(godoCtx.Variant(fmt.Sprintf("error opening browser for auth: %s", err.Error())))
+		Engine.Log("error opening browser for auth: %s", err.Error())
 	}
 }
 
 func main() {
-	godot, ok := gdextension.Link()
-	if !ok {
-		panic("Unable to link to godot")
-	}
-	gd.Register[GodotSpotify](godot)
+	classdb.Register[GodotSpotify]()
+	startup.Engine()
 }
